@@ -26,15 +26,20 @@ export default function Message(props: MessageProps) {
           [styles.userAvatar]: messageUnit?.sender === "user",
         })}
       />
-      {messageUnit.chunkedMessage && (
-        <div className={styles.chunkedMessage}>
-          <ReactMarkdown>{messageUnit.chunkedMessage.join("")}</ReactMarkdown>
-        </div>
-      )}
-      {loading && <div>...</div>}
-      {error && (
-        <div>We were unable to generate a message, please try again.</div>
-      )}
+      <div>
+        {messageUnit.chunkedMessage &&
+          messageUnit.chunkedMessage.length > 0 && (
+            <div className={styles.chunkedMessage}>
+              <ReactMarkdown>
+                {messageUnit.chunkedMessage.join("")}
+              </ReactMarkdown>
+            </div>
+          )}
+        {loading && <div>...</div>}
+        {error && (
+          <div>We were unable to generate a message, please try again.</div>
+        )}
+      </div>
     </div>
   );
 }
