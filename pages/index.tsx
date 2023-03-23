@@ -2,7 +2,7 @@ import Head from "next/head";
 import EmptyState from "@/components/empty-state";
 import Message, { MessageUnit } from "@/components/messages";
 import InputBox from "@/components/input-box";
-import { separateJsonByNewline, tryParsingJson } from "@/components/utils";
+import { separateJsonByNewline } from "@/components/utils";
 import { useState } from "react";
 import styles from "@/styles/Home.module.css";
 
@@ -46,9 +46,6 @@ export default function Home() {
     // pipe response body through decoder so that it is readable
     const reader = res.body?.pipeThrough(decoder).getReader();
 
-    // streaming references:
-    // https://www.loginradius.com/blog/engineering/guest-post/http-streaming-with-nodejs-and-fetch-api/
-    // https://gist.github.com/CMCDragonkai/6bfade6431e9ffb7fe88#transfer-encoding
     while (true) {
       const res = await reader?.read();
 
@@ -127,6 +124,7 @@ export default function Home() {
         {(chunks.length > 0 || loading) && (
           <Message
             loading={loading}
+            error={error}
             messageUnit={{
               sender: "ai",
               chunkedMessage: chunks,

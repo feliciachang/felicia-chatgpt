@@ -24,7 +24,6 @@ export default async function handler(
     },
   });
 
-
   const reader = data.body?.pipeThrough(new TextDecoderStream()).getReader();
 
   // create a result that can stream the chunked as we receive it from OpenAI
