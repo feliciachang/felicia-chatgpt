@@ -1,7 +1,7 @@
-import Head from "next/head";
 import EmptyState from "@/components/empty-state";
-import Message, { MessageUnit } from "@/components/messages";
+import Head from "next/head";
 import InputBox from "@/components/input-box";
+import Message, { MessageUnit } from "@/components/messages";
 import { separateJsonByNewline } from "@/components/utils";
 import { useState } from "react";
 import styles from "@/styles/Home.module.css";
