@@ -83,7 +83,7 @@ export default function Home() {
   }
 
   async function handleSendMessage(message: string) {
-    // reset any old error state
+    // reset error state
     setError(false);
     // show loading notification
     setLoading(true);
@@ -122,7 +122,7 @@ export default function Home() {
             ))}
           </div>
         )}
-        {(chunks.length > 0 || loading) && (
+        {(chunks.length > 0 || loading || error) && (
           <Message
             loading={loading}
             error={error}
