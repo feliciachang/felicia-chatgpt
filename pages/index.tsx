@@ -2,7 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import MessageHistory from "@/components/messages/history";
 import EmptyState from "@/components/messages/empty-state";
-import Message, { MessageString } from "@/components/messages";
+import Message, { MessageUnit } from "@/components/messages";
 import { useState } from "react";
 import styles from "@/styles/Home.module.css";
 import formStyles from "@/components/input-box/index.module.css";
@@ -13,11 +13,22 @@ import formStyles from "@/components/input-box/index.module.css";
 // today: figure out markdown
 
 export default function Home() {
-  const [messageHistory, setMessageHistory] = useState<MessageString[]>([]);
+  const [messageHistory, setMessageHistory] = useState<MessageUnit[]>([]);
+  const [loading, setLoading] = useState(false);
   const [chunks, setChunks] = useState<string[]>([]);
   const [input, setInput] = useState("");
 
   async function handleSendMessage(message: string) {
+    setLoading(true);
+
+    setMessageHistory((messageHistory) => [
+      ...messageHistory,
+      {
+        sender: "user",
+        chunkedMessage: [message],
+      },
+    ]);
+
     const res = await fetch("/api/stream-message", {
       method: "POST",
       body: JSON.stringify({
@@ -27,7 +38,6 @@ export default function Home() {
         "Content-type": "application/json",
       },
     });
-    console.log(res);
 
     const reader = res.body?.pipeThrough(new TextDecoderStream()).getReader();
 
@@ -50,6 +60,7 @@ export default function Home() {
               );
               let content = chatObj?.data.choices[0].delta?.content;
               if (content) {
+                setLoading(false);
                 console.log(content);
                 setChunks((chunks) => [...chunks, content]);
               }
@@ -72,7 +83,15 @@ export default function Home() {
         {messageHistory.length > 0 && (
           <MessageHistory history={messageHistory} />
         )}
-        {chunks.length > 0 && <Message chunks={chunks} />}
+        {chunks.length > 0 && (
+          <Message
+            loading={loading}
+            messageUnit={{
+              sender: "ai",
+              chunkedMessage: chunks,
+            }}
+          />
+        )}
         {chunks.length === 0 && messageHistory.length === 0 && (
           <EmptyState handleSendMessage={handleSendMessage} />
         )}
@@ -85,17 +104,10 @@ export default function Home() {
                 ...messageHistory,
                 {
                   sender: "ai",
-                  message: chunks.join(),
+                  chunkedMessage: chunks,
                 },
               ]);
             }
-            setMessageHistory((messageHistory) => [
-              ...messageHistory,
-              {
-                sender: "user",
-                message: input,
-              },
-            ]);
             setChunks([]);
             handleSendMessage(input);
             setInput("");

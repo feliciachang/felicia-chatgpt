@@ -2,42 +2,35 @@ import ReactMarkdown from "react-markdown";
 import styles from "./index.module.css";
 import cx from "classnames";
 
-export type MessageString = {
+export type MessageUnit = {
   sender: "user" | "ai";
-  message: string;
+  chunkedMessage: string[];
 };
 
 interface MessageProps {
-  chunks?: string[];
-  messageString?: MessageString;
+  loading?: boolean;
+  messageUnit: MessageUnit;
 }
 export default function Message(props: MessageProps) {
-  const { chunks, messageString } = props;
+  const { messageUnit, loading } = props;
 
   return (
     <div
       className={cx(styles.container, {
-        [styles.sender]: messageString?.sender === "user",
+        [styles.sender]: messageUnit?.sender === "user",
       })}
     >
       <div
         className={cx(styles.avatar, {
-          [styles.userAvatar]: messageString?.sender === "user",
+          [styles.userAvatar]: messageUnit?.sender === "user",
         })}
       />
-      {chunks && (
+      {messageUnit.chunkedMessage && (
         <div className={styles.chunkedMessage}>
-          <ReactMarkdown>{chunks.join("")}</ReactMarkdown>
-          {/* {chunks.map((chunkItem, i) => (
-            <span key={`${chunkItem}-${i}-${Math.random() * 100}`}>
-              {chunkItem}
-            </span>
-          ))} */}
+          <ReactMarkdown>{messageUnit.chunkedMessage.join("")}</ReactMarkdown>
         </div>
       )}
-      {messageString && (
-        <div className={styles.message}>{messageString.message}</div>
-      )}
+      {loading && <div className={styles.chunkedMessage}>...</div>}
     </div>
   );
 }

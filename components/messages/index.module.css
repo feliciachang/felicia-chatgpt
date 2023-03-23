@@ -1,7 +1,7 @@
 .container {
     display: flex;
     color: var(--text-primary);
-    min-height: 100px;
+    min-height: 60px;
     margin: 10px 0;
     background-color: #444654;
     width: 100%;
@@ -27,11 +27,5 @@
 .chunkedMessage {
     line-height: 25px;
     margin-left: 20px;
-}
-
-.message {
-    display: flex;
-    color: var(--text-primary);
-    min-height: 100px;
-    margin: 10px 0;
+    margin-right: 50px;
 }

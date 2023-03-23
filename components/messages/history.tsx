@@ -1,9 +1,9 @@
-import Message, { MessageString } from "./index";
+import Message, { MessageUnit } from "./index";
 import styles from "./history.module.css";
 import cx from "classnames";
 
 interface MessageHistoryProps {
-  history: MessageString[];
+  history: MessageUnit[];
 }
 
 export default function MessageHistory(
@@ -13,8 +13,8 @@ export default function MessageHistory(
 
   return (
     <div className={styles.container}>
-      {history.map((historyItem) => (
-        <Message key={historyItem.message} messageString={historyItem} />
+      {history.map((historyItem, i) => (
+        <Message key={i} messageUnit={historyItem} />
       ))}
     </div>
   );
