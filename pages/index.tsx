@@ -106,6 +106,8 @@ export default function Home() {
     handleReadMessage(res);
   }
 
+  console.log(chunks.length > 0 || loading || error);
+
   return (
     <>
       <Head>
