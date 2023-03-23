@@ -31,11 +31,9 @@ export default function Message(props: MessageProps) {
           <ReactMarkdown>{messageUnit.chunkedMessage.join("")}</ReactMarkdown>
         </div>
       )}
-      {loading && <div className={styles.chunkedMessage}>...</div>}
+      {loading && <div>...</div>}
       {error && (
-        <div className={styles.chunkedMessage}>
-          We were unable to generate a message, please try again.
-        </div>
+        <div>We were unable to generate a message, please try again.</div>
       )}
     </div>
   );

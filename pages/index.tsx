@@ -65,7 +65,6 @@ export default function Home() {
                 let content = jsonObj?.data.choices[0].delta?.content;
                 // sometimes no content is returned
                 if (content) {
-                  setLoading(false);
                   // push latest chunk to the chunks array
                   setChunks((chunks) => [...chunks, content]);
                 }
