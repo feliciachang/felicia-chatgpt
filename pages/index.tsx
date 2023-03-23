@@ -40,13 +40,17 @@ export default function Home() {
   }
 
   async function handleReadMessage(res: Response) {
-    const reader = res.body?.pipeThrough(new TextDecoderStream()).getReader();
+    // use TextDecoderStream to decode utf-8 chunk
+    const decoder = new TextDecoderStream();
+    // pipe response body through decoder so that it is readable
+    const reader = res.body?.pipeThrough(decoder).getReader();
 
     // streaming references:
     // https://www.loginradius.com/blog/engineering/guest-post/http-streaming-with-nodejs-and-fetch-api/
     // https://gist.github.com/CMCDragonkai/6bfade6431e9ffb7fe88#transfer-encoding
     while (true) {
       const res = await reader?.read();
+
       if (res?.done) {
         // the stream is done
         break;
@@ -114,7 +118,7 @@ export default function Home() {
             ))}
           </div>
         )}
-        {chunks.length > 0 && (
+        {(chunks.length > 0 || loading) && (
           <Message
             loading={loading}
             messageUnit={{
