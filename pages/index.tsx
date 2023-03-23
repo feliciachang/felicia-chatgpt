@@ -2,6 +2,7 @@ import Head from "next/head";
 import Image from "next/image";
 import EmptyState from "@/components/empty-state";
 import Message, { MessageUnit } from "@/components/messages";
+import InputBox from "@/components/input-box";
 import { useState } from "react";
 import styles from "@/styles/Home.module.css";
 import formStyles from "@/components/input-box/index.module.css";
@@ -15,11 +16,18 @@ export default function Home() {
   const [messageHistory, setMessageHistory] = useState<MessageUnit[]>([]);
   const [loading, setLoading] = useState(false);
   const [chunks, setChunks] = useState<string[]>([]);
-  const [input, setInput] = useState("");
 
-  async function handleSendMessage(message: string) {
-    setLoading(true);
-
+  function manageMessageHistory(message: string) {
+    if (chunks.length > 0) {
+      setMessageHistory((messageHistory) => [
+        ...messageHistory,
+        {
+          sender: "ai",
+          chunkedMessage: chunks,
+        },
+      ]);
+    }
+    setChunks([]);
     setMessageHistory((messageHistory) => [
       ...messageHistory,
       {
@@ -27,6 +35,12 @@ export default function Home() {
         chunkedMessage: [message],
       },
     ]);
+  }
+
+  async function handleSendMessage(message: string) {
+    setLoading(true);
+
+    manageMessageHistory(message);
 
     // make a POST request to our API route, which will call OpenAI's API
     const res = await fetch("/api/stream-message", {
@@ -53,17 +67,17 @@ export default function Home() {
 
       // multiple JSON objects can be sent in a single chunk
       // to parse the JSON objects, split the result value by newline characters
-      let chatStrings = res?.value.trim().split("\n");
-      if (chatStrings) {
-        chatStrings.forEach((chatString) => {
-          if (chatString.length > 0 && chatString !== "data: [DONE]") {
+      let jsonStrings = res?.value.trim().split("\n");
+      if (jsonStrings) {
+        jsonStrings.forEach((jsonString) => {
+          if (jsonString.length > 0 && jsonString !== "data: [DONE]") {
             // formatting of the result isn't semantically correct so making some manual adjustmets here:
-            let chatObj = JSON.parse(
-              `{"${chatString.slice(0, 4)}"${chatString.slice(4)}}`
+            let jsonObj = JSON.parse(
+              `{"${jsonString.slice(0, 4)}"${jsonString.slice(4)}}`
             );
 
             // content is where the actually readable text lives
-            let content = chatObj?.data.choices[0].delta?.content;
+            let content = jsonObj?.data.choices[0].delta?.content;
             // sometimes no content is returned
             if (content) {
               setLoading(false);
@@ -104,34 +118,7 @@ export default function Home() {
         {chunks.length === 0 && messageHistory.length === 0 && (
           <EmptyState handleSendMessage={handleSendMessage} />
         )}
-        <form
-          className={formStyles.inputBox}
-          onSubmit={(e) => {
-            e.preventDefault();
-            if (chunks.length > 0) {
-              setMessageHistory((messageHistory) => [
-                ...messageHistory,
-                {
-                  sender: "ai",
-                  chunkedMessage: chunks,
-                },
-              ]);
-            }
-            setChunks([]);
-            handleSendMessage(input);
-            setInput("");
-          }}
-        >
-          <input
-            className={formStyles.textArea}
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-          />
-          <button className={formStyles.button} type="submit">
-            <Image src="/send-button.svg" alt="arrow" width={25} height={25} />
-          </button>
-        </form>
+        <InputBox handleSendMessage={handleSendMessage} />
       </main>
     </>
   );
