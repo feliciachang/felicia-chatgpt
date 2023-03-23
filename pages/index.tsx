@@ -1,14 +1,15 @@
 import Head from "next/head";
 import Image from "next/image";
-import MessageHistory, { Message } from "@/components/message-history";
-import EmptyState from "@/components/message-history/empty-state";
+import MessageHistory from "@/components/messages/history";
+import EmptyState from "@/components/messages/empty-state";
+import Message, { MessageString } from "@/components/messages";
 import { useState } from "react";
 import styles from "@/styles/Home.module.css";
 import formStyles from "@/components/input-box/index.module.css";
 
 export default function Home() {
-  const [messageHistory, setMessageHistory] = useState<Message[]>([]);
-  const [chunk, setChunk] = useState<string[]>([]);
+  const [messageHistory, setMessageHistory] = useState<MessageString[]>([]);
+  const [chunks, setChunks] = useState<string[]>([]);
   const [input, setInput] = useState("");
 
   async function handleSendMessage(message: string) {
@@ -45,7 +46,7 @@ export default function Home() {
               );
               let content = chatObj?.data.choices[0].delta?.content;
               if (content) {
-                setChunk((chunk) => [...chunk, content]);
+                setChunks((chunks) => [...chunks, content]);
               }
             }
           }
@@ -68,11 +69,7 @@ export default function Home() {
         ) : (
           <EmptyState />
         )}
-        <div style={{ textAlign: "left" }}>
-          {chunk.map((chunkItem) => (
-            <span key={chunkItem}>{chunkItem}</span>
-          ))}
-        </div>
+        {chunks.length > 0 && <Message chunks={chunks} />}
         <form
           className={formStyles.inputBox}
           onSubmit={(e) => {
@@ -84,7 +81,7 @@ export default function Home() {
                 message: input,
               },
             ]);
-            setChunk([]);
+            setChunks([]);
             handleSendMessage(input);
             setInput("");
           }}
