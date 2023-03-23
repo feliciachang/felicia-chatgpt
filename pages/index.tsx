@@ -68,7 +68,7 @@ export default function Home() {
         ) : (
           <EmptyState />
         )}
-        <div>
+        <div style={{ textAlign: "left" }}>
           {chunk.map((chunkItem) => (
             <span key={chunkItem}>{chunkItem}</span>
           ))}
@@ -79,10 +79,6 @@ export default function Home() {
             e.preventDefault();
             setMessageHistory((messageHistory) => [
               ...messageHistory,
-              {
-                sender: "ai",
-                message: chunk.join(),
-              },
               {
                 sender: "user",
                 message: input,

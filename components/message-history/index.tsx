@@ -14,16 +14,17 @@ export default function MessageHistory(
   props: MessageHistoryProps
 ): JSX.Element {
   const { history } = props;
+  console.log(history);
   return (
-    <div>
+    <div className={styles.container}>
       {history.map((historyItem) => (
-        <div
-          className={cx({
-            [styles.leftAlign]: historyItem.sender === "ai",
-            [styles.rightAlign]: historyItem.sender === "user",
-          })}
-          key={historyItem.message}
-        >
+        <div className={styles.message} key={historyItem.message}>
+          <div
+            className={cx(styles.avatar, {
+              [styles.ai]: historyItem.sender === "ai",
+              [styles.rightAlign]: historyItem.sender === "user",
+            })}
+          />
           {historyItem.message}
         </div>
       ))}
