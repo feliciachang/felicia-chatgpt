@@ -1,0 +1,19 @@
+.inputBox {
+    width: 90vw;
+    height: 50px;
+    display: flex;
+    position: absolute;
+    bottom: 20px;
+}
+
+.textArea {
+    width: 100%;
+    border: none;
+    border-radius: 10px 0px 0 10px;
+}
+
+.button {
+    padding: 0 10px;
+    border: none;
+    border-radius: 0px 10px 10px 0px;
+}
