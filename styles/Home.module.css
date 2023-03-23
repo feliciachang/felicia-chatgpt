@@ -5,3 +5,7 @@
   align-items: center;
   min-height: 100vh;
 }
+
+.history {
+  width: 100vw;
+}

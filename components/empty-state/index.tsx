@@ -1,4 +1,4 @@
-import styles from "./empty-state.module.css";
+import styles from "./index.module.css";
 
 interface EmptyStateProps {
   handleSendMessage: (message: string) => void;
