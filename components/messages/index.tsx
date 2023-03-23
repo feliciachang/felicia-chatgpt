@@ -14,7 +14,11 @@ export default function Message(props: MessageProps) {
   const { chunks, messageString } = props;
 
   return (
-    <div className={styles.container}>
+    <div
+      className={cx(styles.container, {
+        [styles.sender]: messageString?.sender === "user",
+      })}
+    >
       <div
         className={cx(styles.avatar, {
           [styles.userAvatar]: messageString?.sender === "user",
@@ -22,8 +26,8 @@ export default function Message(props: MessageProps) {
       />
       {chunks && (
         <div className={styles.chunkedMessage}>
-          {chunks.map((chunkItem) => (
-            <span key={chunkItem} className={styles.chunk}>
+          {chunks.map((chunkItem, i) => (
+            <span key={`${chunkItem}-${i}-${Math.random() * 100}`}>
               {chunkItem}
             </span>
           ))}

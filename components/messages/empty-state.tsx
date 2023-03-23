@@ -1,18 +1,30 @@
 import styles from "./empty-state.module.css";
 
-export default function EmptyState() {
+interface EmptyStateProps {
+  handleSendMessage: (message: string) => void;
+}
+
+export default function EmptyState(props: EmptyStateProps) {
+  const { handleSendMessage } = props;
+
+  const examples = [
+    "Explain quantum computing in simple terms",
+    "Got any creative ideas for a 10 year old's birthday?",
+    "How do I make an HTTP request in Javascript?",
+  ];
+
   return (
     <div className={styles.container}>
       <h3 className={styles.title}>Ask me anything</h3>
-      <button className={styles.examples}>
-        {"Explain quantum computing in simple terms"}
-      </button>
-      <button className={styles.examples}>
-        {"Got any creative ideas for a 10 year old's birthday?"}
-      </button>
-      <button className={styles.examples}>
-        {"How do I make an HTTP request in Javascript?"}
-      </button>
+      {examples.map((example) => (
+        <button
+          key={example}
+          className={styles.examples}
+          onClick={() => handleSendMessage(example)}
+        >
+          {example}
+        </button>
+      ))}
     </div>
   );
 }

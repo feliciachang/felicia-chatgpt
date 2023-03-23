@@ -8,8 +8,12 @@
     padding: 20px 50px;
 }
 
+.container.sender {
+    background-color: rbg(var(--background-rgb));
+}
+
 .avatar {
-    width: 40px;
+    min-width: 40px;
     height: 40px;
     border-radius: 5px;
     background-color: #4AA181;
@@ -21,13 +25,7 @@
 }
 
 .chunkedMessage {
-    display: flex;
-    flex-wrap: wrap;
     line-height: 25px;
-}
-
-.chunk {
-    margin-right: 4px;
 }
 
 .message {

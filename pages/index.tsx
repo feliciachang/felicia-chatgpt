@@ -7,6 +7,11 @@ import { useState } from "react";
 import styles from "@/styles/Home.module.css";
 import formStyles from "@/components/input-box/index.module.css";
 
+// to do
+// overhaul flex positioning
+// loading for ai answer
+// today: figure out markdown
+
 export default function Home() {
   const [messageHistory, setMessageHistory] = useState<MessageString[]>([]);
   const [chunks, setChunks] = useState<string[]>([]);
@@ -34,9 +39,10 @@ export default function Home() {
         console.log("The stream is done.");
         break;
       }
-      console.log(res?.value);
+      //console.log(res?.value);
+      console.log("RESULT VALUE", res?.value);
       let chatStrings = res?.value.trim().split("\n");
-      console.log(chatStrings);
+      // console.log(chatStrings);
       if (chatStrings) {
         chatStrings.forEach((chatString) => {
           if (chatString.length > 0) {
@@ -46,6 +52,7 @@ export default function Home() {
               );
               let content = chatObj?.data.choices[0].delta?.content;
               if (content) {
+                console.log(content);
                 setChunks((chunks) => [...chunks, content]);
               }
             }
@@ -64,16 +71,26 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        {messageHistory.length > 0 ? (
+        {messageHistory.length > 0 && (
           <MessageHistory history={messageHistory} />
-        ) : (
-          <EmptyState />
         )}
         {chunks.length > 0 && <Message chunks={chunks} />}
+        {chunks.length === 0 && messageHistory.length === 0 && (
+          <EmptyState handleSendMessage={handleSendMessage} />
+        )}
         <form
           className={formStyles.inputBox}
           onSubmit={(e) => {
             e.preventDefault();
+            if (chunks.length > 0) {
+              setMessageHistory((messageHistory) => [
+                ...messageHistory,
+                {
+                  sender: "ai",
+                  message: chunks.join(),
+                },
+              ]);
+            }
             setMessageHistory((messageHistory) => [
               ...messageHistory,
               {
