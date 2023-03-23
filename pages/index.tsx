@@ -41,6 +41,9 @@ export default function Home() {
 
     const reader = res.body?.pipeThrough(new TextDecoderStream()).getReader();
 
+    // streaming references:
+    // https://www.loginradius.com/blog/engineering/guest-post/http-streaming-with-nodejs-and-fetch-api/
+    // https://gist.github.com/CMCDragonkai/6bfade6431e9ffb7fe88#transfer-encoding
     while (true) {
       const res = await reader?.read();
       if (res?.done) {

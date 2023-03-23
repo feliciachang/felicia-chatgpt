@@ -5,11 +5,11 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  console.log("request", req)
-  if(req.method === "POST") {
+  // get message from request body, sent from handleSendMessage
   let body = req.body
   let {message} = body;
 
+  // call openAI's chat completion api with the message received from the request body
   const data = await fetch("https://api.openai.com/v1/chat/completions", {
     method: "POST",
     body: JSON.stringify({
@@ -24,8 +24,11 @@ export default async function handler(
     },
   });
 
+
   const reader = data.body?.pipeThrough(new TextDecoderStream()).getReader();
 
+  // create a result that can stream the chunked as we receive it from OpenAI
+  // credit for header settings: https://stackoverflow.com/questions/75256892/eventsource-gets-all-chunks-at-once-when-streaming-via-nextjs-api-routes
   res.setHeader("Content-Type", "text/event-stream");
   res.setHeader("Cache-Control", "no-cache");
   res.setHeader("Connection", "keep-alive");
@@ -36,34 +39,14 @@ export default async function handler(
     const result = await reader?.read();
 
     if (result?.done) {
-      console.log("The stream is done.");
+      // the stream is done
       res.end()
       break;
     }
 
     if(result?.value) {
-      console.log(result?.value)
+      // write the result
       res.write(result?.value)
     }
-
-    // let chatStrings = result?.value.trim().split("\n");
-    // if (chatStrings) {
-    //   chatStrings.forEach((chatString) => {
-    //     if (chatString.length > 0) {
-    //       if (chatString !== "data: [DONE]") {
-    //         console.log("chat string", chatString)
-    //         res.json(`{"${chatString.slice(0, 4)}"${chatString.slice(4)}}`)
-            // let chatObj = JSON.parse(
-            //   `{"${chatString.slice(0, 4)}"${chatString.slice(4)}}`
-            // );
-            // let content = chatObj?.data.choices[0].delta?.content;
-            // if (content) {
-            //   setChunk((chunk) => [...chunk, content]);
-            // }
-      //     }
-      //   }
-      // });
-    // }
   }
-}
 }
