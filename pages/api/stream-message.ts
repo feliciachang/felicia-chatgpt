@@ -5,6 +5,8 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
+  console.log("request", req)
+  if(req.method === "POST") {
   let body = req.body
   let {message} = body;
 
@@ -22,23 +24,35 @@ export default async function handler(
     },
   });
 
-  console.log(data)
   const reader = data.body?.pipeThrough(new TextDecoderStream()).getReader();
+
+  res.setHeader("Content-Type", "text/event-stream");
+  res.setHeader("Cache-Control", "no-cache");
+  res.setHeader("Connection", "keep-alive");
+  res.setHeader("Transfer-Encoding", "chunked");
+  res.setHeader("Content-Encoding", "none");
 
   while (true) {
     const result = await reader?.read();
+
     if (result?.done) {
       console.log("The stream is done.");
       res.end()
       break;
     }
-    let chatStrings = result?.value.trim().split("\n");
-    if (chatStrings) {
-      chatStrings.forEach((chatString) => {
-        if (chatString.length > 0) {
-          if (chatString !== "data: [DONE]") {
-            console.log("chat string", chatString)
-            res.json(`{"${chatString.slice(0, 4)}"${chatString.slice(4)}}`)
+
+    if(result?.value) {
+      console.log(result?.value)
+      res.write(result?.value)
+    }
+
+    // let chatStrings = result?.value.trim().split("\n");
+    // if (chatStrings) {
+    //   chatStrings.forEach((chatString) => {
+    //     if (chatString.length > 0) {
+    //       if (chatString !== "data: [DONE]") {
+    //         console.log("chat string", chatString)
+    //         res.json(`{"${chatString.slice(0, 4)}"${chatString.slice(4)}}`)
             // let chatObj = JSON.parse(
             //   `{"${chatString.slice(0, 4)}"${chatString.slice(4)}}`
             // );
@@ -46,9 +60,10 @@ export default async function handler(
             // if (content) {
             //   setChunk((chunk) => [...chunk, content]);
             // }
-          }
-        }
-      });
-    }
+      //     }
+      //   }
+      // });
+    // }
   }
+}
 }

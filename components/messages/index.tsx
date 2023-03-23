@@ -1,3 +1,4 @@
+import ReactMarkdown from "react-markdown";
 import styles from "./index.module.css";
 import cx from "classnames";
 
@@ -26,11 +27,12 @@ export default function Message(props: MessageProps) {
       />
       {chunks && (
         <div className={styles.chunkedMessage}>
-          {chunks.map((chunkItem, i) => (
+          <ReactMarkdown>{chunks.join("")}</ReactMarkdown>
+          {/* {chunks.map((chunkItem, i) => (
             <span key={`${chunkItem}-${i}-${Math.random() * 100}`}>
               {chunkItem}
             </span>
-          ))}
+          ))} */}
         </div>
       )}
       {messageString && (
