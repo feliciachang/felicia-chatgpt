@@ -71,8 +71,11 @@ export default function Home() {
                 }
               }
             } catch {
+              // show error state
               setError(true);
             }
+            // reset loading state
+            setLoading(false);
           }
         });
       }
@@ -80,6 +83,9 @@ export default function Home() {
   }
 
   async function handleSendMessage(message: string) {
+    // reset any old error state
+    setError(false);
+    // show loading notification
     setLoading(true);
 
     // manage message history before calling for new chat completion
