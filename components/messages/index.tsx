@@ -9,10 +9,11 @@ export type MessageUnit = {
 
 interface MessageProps {
   loading?: boolean;
+  error?: boolean;
   messageUnit: MessageUnit;
 }
 export default function Message(props: MessageProps) {
-  const { messageUnit, loading } = props;
+  const { messageUnit, loading, error } = props;
 
   return (
     <div
@@ -31,6 +32,11 @@ export default function Message(props: MessageProps) {
         </div>
       )}
       {loading && <div className={styles.chunkedMessage}>...</div>}
+      {error && (
+        <div className={styles.chunkedMessage}>
+          We were unable to generate a message, please try again.
+        </div>
+      )}
     </div>
   );
 }

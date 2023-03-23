@@ -2,7 +2,7 @@ import Head from "next/head";
 import EmptyState from "@/components/empty-state";
 import Message, { MessageUnit } from "@/components/messages";
 import InputBox from "@/components/input-box";
-import { separateJsonByNewline } from "@/components/utils";
+import { separateJsonByNewline, tryParsingJson } from "@/components/utils";
 import { useState } from "react";
 import styles from "@/styles/Home.module.css";
 
@@ -14,6 +14,7 @@ import styles from "@/styles/Home.module.css";
 export default function Home() {
   const [messageHistory, setMessageHistory] = useState<MessageUnit[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(false);
   const [chunks, setChunks] = useState<string[]>([]);
 
   function manageMessageHistory(message: string) {
@@ -63,17 +64,22 @@ export default function Home() {
         jsonStrings.forEach((jsonString) => {
           if (jsonString.length > 0 && jsonString !== "data: [DONE]") {
             // formatting of the result isn't semantically correct so making some manual adjustmets here:
-            let jsonObj = JSON.parse(
-              `{"${jsonString.slice(0, 4)}"${jsonString.slice(4)}}`
-            );
-
-            // content is where the actually readable text lives
-            let content = jsonObj?.data.choices[0].delta?.content;
-            // sometimes no content is returned
-            if (content) {
-              setLoading(false);
-              // push latest chunk to the chunks array
-              setChunks((chunks) => [...chunks, content]);
+            try {
+              let jsonObj = JSON.parse(
+                `{"${jsonString.slice(0, 4)}"${jsonString.slice(4)}}`
+              );
+              if (jsonObj) {
+                // content is where the actually readable text lives
+                let content = jsonObj?.data.choices[0].delta?.content;
+                // sometimes no content is returned
+                if (content) {
+                  setLoading(false);
+                  // push latest chunk to the chunks array
+                  setChunks((chunks) => [...chunks, content]);
+                }
+              }
+            } catch {
+              setError(true);
             }
           }
         });
@@ -134,21 +140,4 @@ export default function Home() {
       </main>
     </>
   );
-}
-
-{
-  /* <a
-href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-className={styles.card}
-target="_blank"
-rel="noopener noreferrer"
->
-<h2 className={inter.className}>
-  Deploy <span>-&gt;</span>
-</h2>
-<p className={inter.className}>
-  Instantly deploy your Next.js site to a shareable URL
-  with&nbsp;Vercel.
-</p>
-</a> */
 }
