@@ -20,7 +20,7 @@ export default async function handler(
     headers: {
       "Content-type": "application/json",
       Authorization:
-        "Bearer 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",
+      `Bearer ${process.env.OPEN_AI_KEY}`,
     },
   });
 

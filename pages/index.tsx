@@ -18,19 +18,6 @@ export default function Home() {
   const [input, setInput] = useState("");
 
   async function handleSendMessage(message: string) {
-    // const res = await fetch("https://api.openai.com/v1/chat/completions", {
-    //   method: "POST",
-    //   body: JSON.stringify({
-    //     model: "gpt-3.5-turbo",
-    //     messages: [{ role: "user", content: message }],
-    //     stream: true,
-    //   }),
-    //   headers: {
-    //     "Content-type": "application/json",
-    //     Authorization:
-    //       "Bearer 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",
-    //   },
-    // });
     const res = await fetch("/api/stream-message", {
       method: "POST",
       body: JSON.stringify({
