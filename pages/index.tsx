@@ -6,11 +6,6 @@ import { separateJsonByNewline } from "@/components/utils";
 import { useState } from "react";
 import styles from "@/styles/Home.module.css";
 
-// to do
-// overhaul flex positioning
-// loading for ai answer
-// today: figure out markdown
-
 export default function Home() {
   const [messageHistory, setMessageHistory] = useState<MessageUnit[]>([]);
   const [loading, setLoading] = useState(false);

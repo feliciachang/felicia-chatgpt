@@ -1,38 +1,24 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
-
-## Getting Started
+## Running the app
 
 First, run the development server:
 
-```bash
+```
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+## Overview
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+This app is a replica of ChatGPT that uses OpenAI's chat completion API. 
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+Users can type a message in the input bar, which gets sent as a POST request from the client to the api route `stream-message`. The api route is a serverless way to call the OpenAI API. 
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+`stream-message` streams the response from OpenAI to the client in its original utf-8 encoding. The client then decodes the message into JSON and is rendered with the `react-markdown` library. 
 
-## Learn More
+Messages between the user and OpenAI are stored for a single session in `messageHistory`. 
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Improvements
+1. Explore alternatives to the NextJS api route. Some alternatives include using Server Sent Events and Vercel's Edge Functions. The API route implementation was the implementation I was most familiar with, but more research can be done around improving latency, particularly with Edge functions.
+2. Explore storage alternatives that can persist messages or allow for other chat rooms. The best implementation would be to set up a database to store messages. For a hobby project, local storage is also suitable.
+3. Explore better markdown rendering and formatting. When playing around with ChatGPT, I noticed that codegen was displayed in a custom code editor with copy paste functionality. That would be also be a great next exploration.
