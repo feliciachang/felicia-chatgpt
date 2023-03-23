@@ -1,11 +1,10 @@
 import Head from "next/head";
-import Image from "next/image";
 import EmptyState from "@/components/empty-state";
 import Message, { MessageUnit } from "@/components/messages";
 import InputBox from "@/components/input-box";
+import { separateJsonByNewline } from "@/components/utils";
 import { useState } from "react";
 import styles from "@/styles/Home.module.css";
-import formStyles from "@/components/input-box/index.module.css";
 
 // to do
 // overhaul flex positioning
@@ -18,6 +17,7 @@ export default function Home() {
   const [chunks, setChunks] = useState<string[]>([]);
 
   function manageMessageHistory(message: string) {
+    // move old generated AI answer to message history
     if (chunks.length > 0) {
       setMessageHistory((messageHistory) => [
         ...messageHistory,
@@ -27,7 +27,9 @@ export default function Home() {
         },
       ]);
     }
+    // clear chunks state
     setChunks([]);
+    // add latest user input to message history
     setMessageHistory((messageHistory) => [
       ...messageHistory,
       {
@@ -37,22 +39,7 @@ export default function Home() {
     ]);
   }
 
-  async function handleSendMessage(message: string) {
-    setLoading(true);
-
-    manageMessageHistory(message);
-
-    // make a POST request to our API route, which will call OpenAI's API
-    const res = await fetch("/api/stream-message", {
-      method: "POST",
-      body: JSON.stringify({
-        message: message,
-      }),
-      headers: {
-        "Content-type": "application/json",
-      },
-    });
-
+  async function handleReadMessage(res: Response) {
     const reader = res.body?.pipeThrough(new TextDecoderStream()).getReader();
 
     // streaming references:
@@ -67,8 +54,8 @@ export default function Home() {
 
       // multiple JSON objects can be sent in a single chunk
       // to parse the JSON objects, split the result value by newline characters
-      let jsonStrings = res?.value.trim().split("\n");
-      if (jsonStrings) {
+      if (res?.value) {
+        let jsonStrings = separateJsonByNewline(res.value);
         jsonStrings.forEach((jsonString) => {
           if (jsonString.length > 0 && jsonString !== "data: [DONE]") {
             // formatting of the result isn't semantically correct so making some manual adjustmets here:
@@ -88,6 +75,27 @@ export default function Home() {
         });
       }
     }
+  }
+
+  async function handleSendMessage(message: string) {
+    setLoading(true);
+
+    // manage message history before calling for new chat completion
+    manageMessageHistory(message);
+
+    // make a POST request to our API route, which will call OpenAI's API
+    const res = await fetch("/api/stream-message", {
+      method: "POST",
+      body: JSON.stringify({
+        message: message,
+      }),
+      headers: {
+        "Content-type": "application/json",
+      },
+    });
+
+    // handle streaming logic
+    handleReadMessage(res);
   }
 
   return (
