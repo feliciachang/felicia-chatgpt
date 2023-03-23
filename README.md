@@ -8,6 +8,10 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
+You can also try a deployed version of the app on [https://felicia-perplexity.vercel.app/](https://felicia-perplexity.vercel.app/) but note that results have a higher chance of timing out. Unfortunately, on Vercel's Hobby plan, the serverless API routes can only be processed for 5 seconds. This means that after 5 seconds, the route responds with a 504 GATEWAY TIMEOUT error.
+
+Simple queries like `Hello!` should work on the deployed version.
+
 ## Overview
 
 This app is a replica of ChatGPT that uses OpenAI's chat completion API. 
