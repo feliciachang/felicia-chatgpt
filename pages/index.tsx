@@ -1,5 +1,7 @@
 import Head from "next/head";
+import Image from "next/image";
 import MessageHistory, { Message } from "@/components/message-history";
+import EmptyState from "@/components/message-history/empty-state";
 import { useState } from "react";
 import styles from "@/styles/Home.module.css";
 import formStyles from "@/components/input-box/index.module.css";
@@ -61,7 +63,11 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className={styles.main}>
-        <MessageHistory history={messageHistory} />
+        {messageHistory.length > 0 ? (
+          <MessageHistory history={messageHistory} />
+        ) : (
+          <EmptyState />
+        )}
         <div>
           {chunk.map((chunkItem) => (
             <span key={chunkItem}>{chunkItem}</span>
@@ -93,7 +99,9 @@ export default function Home() {
             value={input}
             onChange={(e) => setInput(e.target.value)}
           />
-          <input className={formStyles.button} type="submit" value="send" />
+          <button className={formStyles.button} type="submit">
+            <Image src="/send-button.svg" alt="arrow" width={25} height={25} />
+          </button>
         </form>
       </main>
     </>

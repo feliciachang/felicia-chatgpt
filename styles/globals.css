@@ -8,6 +8,10 @@
   --background-rgb: 52, 53, 64;
   --text-color-rgb: 236, 236, 241;
 
+  --secondary-background: #40414E;
+  --secondary-background-hover: #202123;
+  --text-primary: #ECECF1;
+
   --tile-start-rgb: 239, 245, 249;
   --tile-end-rgb: 228, 232, 233;
   --tile-border: conic-gradient(
@@ -36,6 +40,7 @@ html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
+  font-family: sans-serif;
 }
 
 body {
