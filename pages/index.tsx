@@ -2,6 +2,7 @@ import EmptyState from "@/components/empty-state";
 import Head from "next/head";
 import InputBox from "@/components/input-box";
 import Chunk from "@/components/chunk";
+import Markdown from "@/components/markdown";
 import Message, { MessageUnit } from "@/components/messages";
 import { separateJsonByNewline } from "@/components/utils";
 import { useState, useRef } from "react";
@@ -21,7 +22,7 @@ export default function Home() {
         ...messageHistory,
         {
           sender: "ai",
-          chunkedMessage: chunks,
+          text: chunks.join(),
         },
       ]);
     }
@@ -32,7 +33,7 @@ export default function Home() {
       ...messageHistory,
       {
         sender: "user",
-        chunkedMessage: [message],
+        text: message,
       },
     ]);
   }
@@ -43,14 +44,11 @@ export default function Home() {
     // pipe response body through decoder so that it is readable
     const reader = res.body?.pipeThrough(decoder).getReader();
 
-    // let accumulator = 0;
-    let bufferedContent = "";
     while (true) {
       const res = await reader?.read();
 
       if (res?.done) {
         // the stream is done
-        // setChunks((chunks) => [...chunks, bufferedContent]);
         setUseMarkdown(true);
         break;
       }
@@ -111,8 +109,6 @@ export default function Home() {
     handleReadMessage(res);
   }
 
-  const newLine = useRef(false);
-
   return (
     <>
       <Head>
@@ -125,36 +121,31 @@ export default function Home() {
         {messageHistory.length > 0 && (
           <div className={styles.history}>
             {messageHistory.map((historyItem, i) => (
-              <Message key={i} messageUnit={historyItem} />
+              <Message
+                key={i}
+                sender={historyItem.sender}
+                message={<Markdown message={historyItem.text} />}
+              />
             ))}
           </div>
         )}
-        {/* {(chunks.length > 0 || loading || error) && (
-          <Message
-            loading={loading}
-            error={error}
-            messageUnit={{
-              sender: "ai",
-              chunkedMessage: chunks,
-            }}
-          />
-        )} */}
-        {/* {useMarkdown ? (
-          <Message
-            loading={loading}
-            error={error}
-            messageUnit={{
-              sender: "ai",
-              chunkedMessage: chunks,
-            }}
-          />
-        ) : ( */}
-        <span className={styles.chunkContainer}>
-          {chunks.map((chunk, i) => {
-            return <Chunk data={chunk} />;
-          })}
-        </span>
-        {/* )} */}
+        <Message
+          sender="ai"
+          message={
+            <span className={styles.chunkContainer}>
+              {chunks.map((chunk, i) => {
+                return <Chunk key={i} data={chunk} />;
+              })}
+              {loading && <span>...</span>}
+              {error && (
+                <span>
+                  sorry, we were unable to generate your message. please try
+                  again.
+                </span>
+              )}
+            </span>
+          }
+        />
         {chunks.length === 0 && messageHistory.length === 0 && (
           <EmptyState handleSendMessage={handleSendMessage} />
         )}
