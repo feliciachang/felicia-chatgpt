@@ -9,3 +9,40 @@
 .history {
   width: 100vw;
 }
+
+.chunkContainer {
+  width: 90vw;
+  /* display: flex;
+  flex-wrap: wrap;
+  justify-content: left;
+  max-width: 800px; */
+}
+.chunkContainer div {
+  display: inline;
+}
+.markdownRenderer {
+  color: white;
+  opacity: 0;
+  animation: fadeIn ease 0.7s forwards;
+}
+
+
+/* 
+.markdownRenderer div {
+  display: inline-block;
+}
+
+.markdownRenderer p {
+  display: inline-block;
+} */
+
+@keyframes fadeIn {
+  0% {
+      opacity: 0;
+  }
+
+  100% {
+      opacity: 1;
+  }
+}
+

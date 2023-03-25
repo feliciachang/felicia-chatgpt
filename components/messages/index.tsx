@@ -12,9 +12,42 @@ interface MessageProps {
   error?: boolean;
   messageUnit: MessageUnit;
 }
+
+// export const Message = useMemo((props: MessageProps): JSX.Element => {
+//   const { messageUnit, loading, error } = props;
+//   console.log("calling again");
+//   return (
+//     <div
+//       className={cx(styles.container, {
+//         [styles.sender]: messageUnit?.sender === "user",
+//       })}
+//     >
+//       <div
+//         className={cx(styles.avatar, {
+//           [styles.userAvatar]: messageUnit?.sender === "user",
+//         })}
+//       />
+//       <div>
+//         {messageUnit.chunkedMessage &&
+//           messageUnit.chunkedMessage.length > 0 && (
+//             <div className={styles.chunkedMessage}>
+//               <ReactMarkdown>
+//                 {messageUnit.chunkedMessage.join("")}
+//               </ReactMarkdown>
+//             </div>
+//           )}
+//         {loading && <div>...</div>}
+//         {error && (
+//           <div>We were unable to generate a message, please try again.</div>
+//         )}
+//       </div>
+//     </div>
+//   );
+// }, areEqual)
+
 export default function Message(props: MessageProps) {
   const { messageUnit, loading, error } = props;
-
+  console.log("calling again");
   return (
     <div
       className={cx(styles.container, {

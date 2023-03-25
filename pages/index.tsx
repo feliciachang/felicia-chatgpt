@@ -1,9 +1,10 @@
 import EmptyState from "@/components/empty-state";
 import Head from "next/head";
 import InputBox from "@/components/input-box";
+import Chunk from "@/components/chunk";
 import Message, { MessageUnit } from "@/components/messages";
 import { separateJsonByNewline } from "@/components/utils";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import styles from "@/styles/Home.module.css";
 
 export default function Home() {
@@ -11,6 +12,7 @@ export default function Home() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
   const [chunks, setChunks] = useState<string[]>([]);
+  const [useMarkdown, setUseMarkdown] = useState(false);
 
   function manageMessageHistory(message: string) {
     // move old generated AI answer to message history
@@ -41,11 +43,15 @@ export default function Home() {
     // pipe response body through decoder so that it is readable
     const reader = res.body?.pipeThrough(decoder).getReader();
 
+    // let accumulator = 0;
+    let bufferedContent = "";
     while (true) {
       const res = await reader?.read();
 
       if (res?.done) {
         // the stream is done
+        // setChunks((chunks) => [...chunks, bufferedContent]);
+        setUseMarkdown(true);
         break;
       }
 
@@ -105,6 +111,8 @@ export default function Home() {
     handleReadMessage(res);
   }
 
+  const newLine = useRef(false);
+
   return (
     <>
       <Head>
@@ -121,7 +129,7 @@ export default function Home() {
             ))}
           </div>
         )}
-        {(chunks.length > 0 || loading || error) && (
+        {/* {(chunks.length > 0 || loading || error) && (
           <Message
             loading={loading}
             error={error}
@@ -130,7 +138,23 @@ export default function Home() {
               chunkedMessage: chunks,
             }}
           />
-        )}
+        )} */}
+        {/* {useMarkdown ? (
+          <Message
+            loading={loading}
+            error={error}
+            messageUnit={{
+              sender: "ai",
+              chunkedMessage: chunks,
+            }}
+          />
+        ) : ( */}
+        <span className={styles.chunkContainer}>
+          {chunks.map((chunk, i) => {
+            return <Chunk data={chunk} />;
+          })}
+        </span>
+        {/* )} */}
         {chunks.length === 0 && messageHistory.length === 0 && (
           <EmptyState handleSendMessage={handleSendMessage} />
         )}
