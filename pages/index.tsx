@@ -129,23 +129,31 @@ export default function Home() {
             ))}
           </div>
         )}
-        <Message
-          sender="ai"
-          message={
-            <span className={styles.chunkContainer}>
-              {chunks.map((chunk, i) => {
-                return <Chunk key={i} data={chunk} />;
-              })}
-              {loading && <span>...</span>}
-              {error && (
-                <span>
-                  sorry, we were unable to generate your message. please try
-                  again.
-                </span>
-              )}
-            </span>
-          }
-        />
+        {chunks.length > 0 && (
+          <Message
+            sender="ai"
+            message={
+              <span className={styles.chunkContainer}>
+                {useMarkdown ? (
+                  <Markdown message={chunks.join("")} />
+                ) : (
+                  <>
+                    {chunks.map((chunk, i) => {
+                      return <Chunk key={i} data={chunk} />;
+                    })}
+                  </>
+                )}
+                {loading && <span>...</span>}
+                {error && (
+                  <span>
+                    sorry, we were unable to generate your message. please try
+                    again.
+                  </span>
+                )}
+              </span>
+            }
+          />
+        )}
         {chunks.length === 0 && messageHistory.length === 0 && (
           <EmptyState handleSendMessage={handleSendMessage} />
         )}

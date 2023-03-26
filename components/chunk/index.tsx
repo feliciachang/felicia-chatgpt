@@ -16,7 +16,7 @@ export default function Chunk(props: ChunkProps) {
 
   return (
     <div>
-      <span className={styles.markdownRenderer}>{data}</span>
+      <span className={styles.chunkRenderer}>{data}</span>
       {addLineBreak && <br />}
     </div>
   );

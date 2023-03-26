@@ -8,10 +8,6 @@ interface MarkdownProps {
 export default function Markdown(props: MarkdownProps) {
   const { message } = props;
   return (
-    <div className={styles.chunkedMessage}>
-      <ReactMarkdown className={styles.markdownRenderer}>
-        {message}
-      </ReactMarkdown>
-    </div>
+    <ReactMarkdown className={styles.markdownRenderer}>{message}</ReactMarkdown>
   );
 }

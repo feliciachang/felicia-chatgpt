@@ -1,7 +1,8 @@
-.markdownRenderer {
+.chunkRenderer {
     opacity: 0;
     animation: fadeIn ease 1s forwards;
     color: var(--text-primary);
+    line-height: 25px;
 }
   
 
