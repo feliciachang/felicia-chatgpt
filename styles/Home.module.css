@@ -10,4 +10,21 @@
   width: 100vw;
 }
 
-
+.typingIndicator {
+  width: 10px;
+  height: 20px;
+  background-color: var(--text-primary);
+  opacity: 1;
+  animation: fadeInOut ease 1.5s infinite;
+}
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}

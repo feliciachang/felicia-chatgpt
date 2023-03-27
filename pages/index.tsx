@@ -27,7 +27,7 @@ export default function Home() {
         ...messageHistory,
         {
           sender: "ai",
-          text: chunks.join(),
+          text: chunks.join(""),
         },
       ]);
     }
@@ -91,8 +91,9 @@ export default function Home() {
   }
 
   async function handleSendMessage(message: string) {
-    // reset error state
+    // reset states
     setError(false);
+    setUseMarkdown(false);
     // show loading notification
     setLoading(true);
 
@@ -148,7 +149,7 @@ export default function Home() {
                     })}
                   </>
                 )}
-                {loading && <span>...</span>}
+                {loading && <div className={styles.typingIndicator} />}
                 {error && (
                   <span>
                     sorry, we were unable to generate your message. please try
