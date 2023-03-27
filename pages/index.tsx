@@ -78,7 +78,8 @@ export default function Home() {
                   setChunks((chunks) => [...chunks, content]);
                 }
               }
-            } catch {
+            } catch (e) {
+              console.log(e);
               // show error state
               setError(true);
             }
