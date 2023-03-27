@@ -1,11 +1,6 @@
 import styles from "./index.module.css";
 import cx from "classnames";
 
-export type MessageUnit = {
-  sender: "user" | "ai";
-  text: string;
-};
-
 interface MessageProps {
   sender: "user" | "ai";
   message: JSX.Element;
@@ -25,7 +20,7 @@ export default function Message(props: MessageProps) {
           [styles.userAvatar]: sender === "user",
         })}
       />
-      {message}
+      <div className={styles.message}>{message}</div>
     </div>
   );
 }

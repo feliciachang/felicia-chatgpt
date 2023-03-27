@@ -24,26 +24,6 @@
     background-color: #533723;
 }
 
-.chunkedMessage {
-    line-height: 25px;
-    margin-left: 20px;
+.message {
     margin-right: 50px;
-    opacity: 0;
-    animation: fadeIn ease 2s forwards;
 }
-
-.markdownRenderer {
-    opacity: 0;
-    animation: fadeIn ease 1s forwards;
-  }
-  
-
-@keyframes fadeIn {
-    0% {
-        opacity: 0;
-    }
-  
-    100% {
-        opacity: 1;
-    }
-  }

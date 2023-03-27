@@ -1,12 +1,17 @@
+import Chunk from "@/components/chunk";
 import EmptyState from "@/components/empty-state";
 import Head from "next/head";
 import InputBox from "@/components/input-box";
-import Chunk from "@/components/chunk";
 import Markdown from "@/components/markdown";
-import Message, { MessageUnit } from "@/components/messages";
+import Message from "@/components/messages";
 import { separateJsonByNewline } from "@/components/utils";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import styles from "@/styles/Home.module.css";
+
+type MessageUnit = {
+  sender: "user" | "ai";
+  text: string;
+};
 
 export default function Home() {
   const [messageHistory, setMessageHistory] = useState<MessageUnit[]>([]);
@@ -129,11 +134,11 @@ export default function Home() {
             ))}
           </div>
         )}
-        {chunks.length > 0 && (
+        {(chunks.length > 0 || loading || error) && (
           <Message
             sender="ai"
             message={
-              <span className={styles.chunkContainer}>
+              <>
                 {useMarkdown ? (
                   <Markdown message={chunks.join("")} />
                 ) : (
@@ -150,7 +155,7 @@ export default function Home() {
                     again.
                   </span>
                 )}
-              </span>
+              </>
             }
           />
         )}

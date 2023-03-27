@@ -15,9 +15,9 @@ export default function Chunk(props: ChunkProps) {
   }, [data]);
 
   return (
-    <div>
+    <>
       <span className={styles.chunkRenderer}>{data}</span>
       {addLineBreak && <br />}
-    </div>
+    </>
   );
 }
