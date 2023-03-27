@@ -26,3 +26,8 @@ Messages between the user and OpenAI are stored for a single session in `message
 1. Explore alternatives to the NextJS api route, since the deployed version can only persist for 5 seconds. ie spinning up a seperate server that calls OpenAI.
 2. Explore storage alternatives that can persist messages or allow for other chat rooms. The best implementation would be to set up a database to store messages. For a hobby project, local storage is also suitable.
 3. Explore better markdown rendering and formatting. When playing around with ChatGPT, I noticed that codegen was displayed in a custom code editor with copy paste functionality. That would be also be a great next exploration.
+
+## Streaming Update
+I worked on making streaming a bit smoother, trying to replicate the nice fade-in effect that I saw on Perplexity. To do so, I had to rewrite some of the rendering logic for the chunks. Rather than joining the items in an chunks array as one big string, I mapped each item and rendered it as a span with a fade-in css animation applied to it. Once the entire response is rendered, I rerender the entire string as markdown. 
+
+The effect works smoothly when running in development, but the rendering is a lot choppier in production. Currently investigating...
