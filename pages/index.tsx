@@ -60,8 +60,10 @@ export default function Home() {
 
       // multiple JSON objects can be sent in a single chunk
       // to parse the JSON objects, split the result value by newline characters
+      console.log("res value", res?.value);
       if (res?.value) {
         let jsonStrings = separateJsonByNewline(res.value);
+        console.log(jsonStrings);
         jsonStrings.forEach((jsonString) => {
           if (jsonString.length > 0 && jsonString !== "data: [DONE]") {
             // formatting of the result isn't semantically correct so making some manual adjustmets here:
